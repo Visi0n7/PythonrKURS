@@ -22,6 +22,8 @@ class Processor(threading.Thread):
         self.log_area = log_area
         self.update_gui_callback = update_gui_callback
         self.update_chart_callback = update_chart_callback
+        self.completed_tasks = 0  # Количество завершенных задач
+        self.total_time = 0  # Общее время выполнения задач
 
     def run(self):
         while True:
@@ -33,6 +35,11 @@ class Processor(threading.Thread):
                 self.update_gui_callback(self.processor_id, f"Выполняется задача {task.task_id}")
                 self.update_chart_callback(self.processor_id - 1, task.duration)
                 time.sleep(task.duration)
+                
+                # Обновляем статистику процессора
+                self.completed_tasks += 1
+                self.total_time += task.duration
+
                 self.log_area.config(state=tk.NORMAL)
                 self.log_area.insert(tk.END, f"Процессор {self.processor_id} завершил задачу {task.task_id}\n")
                 self.log_area.config(state=tk.DISABLED)
@@ -44,6 +51,9 @@ class Processor(threading.Thread):
                 self.log_area.config(state=tk.DISABLED)
                 self.update_gui_callback(self.processor_id, "Завершил работу")
                 break
+
+    def get_stats(self):
+        return f"Процессор {self.processor_id}: {self.completed_tasks} задач, {self.total_time} секунд"
 
 # Основной класс приложения
 class App:
@@ -153,6 +163,13 @@ class App:
         self.task_queue.join()
         for processor in self.processors:
             processor.join()
+
+        # Добавляем итоги по каждому процессору в лог-область
+        self.log_area.config(state=tk.NORMAL)
+        self.log_area.insert(tk.END, f"\n--- Итоги по процессорам ---\n")
+        for processor in self.processors:
+            self.log_area.insert(tk.END, f"Процессор {processor.processor_id}: {processor.completed_tasks} задач, {processor.total_time} секунд\n")
+        self.log_area.config(state=tk.DISABLED)
 
         self.finished_label.config(text="Все задачи обработаны!")
 
