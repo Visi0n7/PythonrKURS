@@ -63,18 +63,18 @@ class App:
         self.params_frame = tk.Frame(self.root)
         self.params_frame.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
 
-        ttk.Label(self.params_frame, text="Количество процессоров:").grid(row=0, column=0, sticky=tk.W, pady=5)
-        self.num_processors_entry = ttk.Entry(self.params_frame, width=5)
+        ttk.Label(self.params_frame, text="Количество процессоров:", font=("Arial", 14)).grid(row=0, column=0, sticky=tk.W, pady=5)
+        self.num_processors_entry = ttk.Entry(self.params_frame, font=("Arial", 14), width=5)
         self.num_processors_entry.grid(row=0, column=1, pady=5)
         self.num_processors_entry.insert(0, "3")
 
-        ttk.Label(self.params_frame, text="Количество задач:").grid(row=1, column=0, sticky=tk.W, pady=5)
-        self.num_tasks_entry = ttk.Entry(self.params_frame, width=5)
+        ttk.Label(self.params_frame, text="Количество задач:", font=("Arial", 14)).grid(row=1, column=0, sticky=tk.W, pady=5)
+        self.num_tasks_entry = ttk.Entry(self.params_frame, font=("Arial", 14), width=5)
         self.num_tasks_entry.grid(row=1, column=1, pady=5)
         self.num_tasks_entry.insert(0, "10")
 
         # Лог-область
-        self.log_area = tk.Text(self.root, height=30, width=40, state=tk.DISABLED)
+        self.log_area = tk.Text(self.root, height=30, width=80, state=tk.DISABLED, font=("Arial", 12))
         self.log_area.grid(row=1, column=0, rowspan=2, padx=10, pady=10, sticky=tk.NS)
 
         # Диаграмма выполнения
@@ -88,14 +88,20 @@ class App:
         self.buttons_frame = tk.Frame(self.root)
         self.buttons_frame.grid(row=2, column=1, pady=10)
 
+        button_font = ("Arial", 12)  # Увеличенный шрифт для кнопок
+
         self.start_button = ttk.Button(self.buttons_frame, text="Запустить", command=self.start_simulation)
-        self.start_button.grid(row=0, column=0, padx=5)
+        self.start_button.grid(row=0, column=0, padx=10)
+        self.start_button.config(width=20)
+        self.start_button["style"] = "Big.TButton"
 
         self.exit_button = ttk.Button(self.buttons_frame, text="Выход", command=self.root.quit)
-        self.exit_button.grid(row=0, column=1, padx=5)
+        self.exit_button.grid(row=0, column=1, padx=10)
+        self.exit_button.config(width=20)
+        self.exit_button["style"] = "Big.TButton"
 
         # Метка для отображения завершения
-        self.finished_label = ttk.Label(self.root, text="", font=("Arial", 12, "bold"))
+        self.finished_label = ttk.Label(self.root, text="", font=("Arial", 14, "bold"))
         self.finished_label.grid(row=3, column=0, columnspan=3, pady=10)
 
     def initialize_chart(self):
@@ -153,5 +159,7 @@ class App:
 # Запуск приложения
 if __name__ == "__main__":
     root = tk.Tk()
+    style = ttk.Style()
+    style.configure("Big.TButton", font=("Arial", 14))
     app = App(root)
     root.mainloop()
